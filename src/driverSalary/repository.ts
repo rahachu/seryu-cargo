@@ -1,8 +1,8 @@
 import db from '@/common/configs/db';
-import { DriverSalary, DriverSalaryGetParams } from './model';
+import { DriverSalaryGetParams, DriverSalaryWithTotalRow } from './model';
 
 export class DriverSalaryRepository {
-    static findDriverSalaryWithFilter(req: DriverSalaryGetParams): Promise<DriverSalary[]> {
+    static findDriverSalaryWithFilter(req: DriverSalaryGetParams): Promise<DriverSalaryWithTotalRow[]> {
         const getWhereStatus = () => {
             if (req.status == 'CONFIRMED') {
                 return 'AND total_confirmed > 0'
@@ -17,7 +17,7 @@ export class DriverSalaryRepository {
 
         return db.any(`
             WITH driver_attendance_salary AS (SELECT value FROM variable_configs WHERE key = 'DRIVER_MONTHLY_ATTENDANCE_SALARY'),
-            driver_salary_result AS (SELECT d.name, d.driver_code,
+            driver_salary_result AS (SELECT count(d.name) OVER() AS total_row, d.name, d.driver_code,
             FLOOR(SUM(CASE WHEN sc.cost_status = 'PENDING' then sc.total_costs ELSE 0 END)) as total_pending,
             FLOOR(SUM(CASE WHEN sc.cost_status = 'CONFIRMED' then sc.total_costs ELSE 0 END)) as total_confirmed,
             FLOOR(SUM(CASE WHEN sc.cost_status = 'PAID' then sc.total_costs ELSE 0 END)) as total_paid,
@@ -44,7 +44,7 @@ export class DriverSalaryRepository {
                 getWhereStatus()
                 : ''
             }
-            LIMIT $/page_size/ OFFSET $/current/ - 1;
+            LIMIT $/page_size/ OFFSET ($/current/ - 1) * $/page_size/;
         `, req);
     }
 }

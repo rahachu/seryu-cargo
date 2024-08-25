@@ -1,7 +1,7 @@
 import type { Request, RequestHandler, Response } from "express";
 
 import { handleServiceResponse } from "@/common/utils/httpHandlers";
-import { DriverSalaryGetParams, DriverSalaryGetParamsSchema } from "./model";
+import { DriverSalary, DriverSalaryGetParams, DriverSalaryGetParamsSchema, DriverSalarySchema } from "./model";
 import { ServiceResponse } from "@/common/models/serviceResponse";
 import { Pagination } from "@/common/models/pagination";
 import { DriverSalaryRepository } from "./repository";
@@ -16,7 +16,12 @@ class DriverSalaryController {
     const queryResult = await DriverSalaryRepository.findDriverSalaryWithFilter(params);
     const serviceResponse = ServiceResponse.success(
       'test',
-      new Pagination({data: queryResult})
+      new Pagination<DriverSalary>({
+        data: queryResult.map((o) => DriverSalarySchema.parse(o)),
+        page_size: params.page_size,
+        current: params.current,
+        total_row: queryResult[0]?.total_row
+      })
     );
     return handleServiceResponse(serviceResponse, res);
   };

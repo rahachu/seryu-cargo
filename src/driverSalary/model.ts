@@ -1,15 +1,16 @@
 import { z } from "zod";
 
 export type DriverSalary = z.infer<typeof DriverSalarySchema>;
+export type DriverSalaryWithTotalRow = DriverSalary & {total_row: number};
 export const DriverSalarySchema = z.object({
     driver_code : z.string(),
     name : z.string(),
-    total_pending : z.number().int(),
-    total_confirmed : z.number().int(),
-    total_paid : z.number().int(),
-    total_attendance_salary : z.number().int(),
-    total_salary : z.number().int(),
-    count_shipment : z.number().int(),
+    total_pending : z.coerce.number().int(),
+    total_confirmed : z.coerce.number().int(),
+    total_paid : z.coerce.number().int(),
+    total_attendance_salary : z.coerce.number().int(),
+    total_salary : z.coerce.number().int(),
+    count_shipment : z.coerce.number().int(),
 });
 
 export type DriverSalaryGetParams = z.infer<typeof DriverSalaryGetParamsSchema>;
