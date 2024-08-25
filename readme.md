@@ -3,23 +3,23 @@
 
 ## Quick Start
 
-The quickest way to get started with express is to utilize the executable `express(1)` to generate an application as shown below:
+The quickest way to get started an application as shown below:
 
-Clone the app:
+### Clone the app:
 
 ```bash
-$ git clone blablabla
+$ git clone https://github.com/rahachu/seryu-cargo.git
 ```
 
-Install dependencies:
+### Install dependencies:
 
 ```bash
 $ npm install
 ```
 
-Duplicate .env.example to .env and adjust the value
+### Duplicate .env.example to .env and adjust the value
 
-Start your Express.js app at `http://localhost:3000/`:
+### Start Express.js app at `http://localhost:3000/`:
 
 ```bash
 $ npm run dev
